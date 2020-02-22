@@ -156,7 +156,7 @@ function checkPL(event = null, p = null){
            console.log((j+1) + ": \"" + save[j+1] + "\"");
        }
     }else if(Object.keys(save).length < Object.keys(current).length){
-        console.log("A total of "(size - Object.keys(current).length) +
+        console.log("A total of " + (size - Object.keys(current).length) +
                     " new videos were added since last save starting at position " + size + ".");
     }
 
