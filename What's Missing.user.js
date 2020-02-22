@@ -2,6 +2,7 @@
 // @name         What's Missing
 // @version      1.2
 // @description  Save playlist videos in order to remember what video got removed
+// @license      MIT
 // @author       fletcher
 // @include      *.youtube.*
 // @grant        GM_setValue
