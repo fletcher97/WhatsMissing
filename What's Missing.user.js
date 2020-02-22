@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name         What's Missing
-// @version      1.2.2
+// @version      1.2.3
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
 // @author       fletcher
 // @include      *.youtube.*
 // @homepage     https://github.com/fletcher97/userScripts
 // @homepageURL  https://github.com/fletcher97/userScripts
-// @updateURL    https://github.com/fletcher97/userScripts/blob/master/What%27s%20Missing.user.js
-// @downloadURL  https://github.com/fletcher97/userScripts/blob/master/What%27s%20Missing.user.js
+// @updateURL    https://openuserjs.org/meta/fletcher/Whats_Missing.meta.js
 // @supportURL   https://github.com/fletcher97/userScripts/issues
 // @grant        GM_setValue
 // @grant        GM_listValues
