@@ -99,11 +99,11 @@ function getList(event = null, returnRes = 0, p = null){
     }
 
     //parse list of titles into a json string
-    var json = '{'; //'{"'+pl+'":[';
+    var json = '{';
     for(var i = 0; i < list.length; i++){
-        json += '"' + (i+1) + '":"' + list[i] + '",'; //'{"' + (i+1) + '":"' + list[i] + '"},';
+        json += '"' + (i+1) + '":"' + list[i] + '",';
     }
-    json = json.slice(0, -1) + '}';//']}';
+    json = json.slice(0, -1) + '}';
 
     //return result without saving if specified in parameters
     if(returnRes){
