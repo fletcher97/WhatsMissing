@@ -7,8 +7,8 @@
 // @include      *.youtube.*
 // @homepage     https://github.com/fletcher97/userScripts
 // @homepageURL  https://github.com/fletcher97/userScripts
-// @updateURL    https://github.com/fletcher97/userScripts/edit/master/What's%20Missing.user.js
-// @downloadURL  https://github.com/fletcher97/userScripts/edit/master/What's%20Missing.user.js
+// @updateURL    https://github.com/fletcher97/userScripts/edit/master/What%27s%20Missing.user.js
+// @downloadURL  https://github.com/fletcher97/userScripts/edit/master/What%27s%20Missing.user.js
 // @supportURL   https://github.com/fletcher97/userScripts/issues
 // @grant        GM_setValue
 // @grant        GM_listValues
