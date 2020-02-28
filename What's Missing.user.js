@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         What's Missing
-// @version      1.2.3
+// @version      1.2.4
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
 // @author       fletcher
@@ -72,7 +72,7 @@ function getPlName(p = null){
 //    if specified so that the user only has to enter the name of the playlist once per operation.
 function getList(event = null, returnRes = 0, p = null){
     //get a list of all the videos
-    var list = document.querySelectorAll("[id='video-title']");
+    var list = document.getElementsByClassName('style-scope ytd-playlist-video-list-renderer').contents.querySelectorAll("[id='video-title']");
     //get the playlist name
     var pl = getPlName(p);
     if(pl === null){return;}
@@ -89,9 +89,9 @@ function getList(event = null, returnRes = 0, p = null){
         }
     }else if(returnRes !== 1){
         var c = Object.keys(JSON.parse(saved)).length;
-        if(window.confirm("This playlist has been saved before and it had " + c +
-                          " items. Do you want to overide your previous save?")){
-        }else{
+        if(!window.confirm("This playlist has been saved before and it had " + c +
+                          " items. Do you want to overide your previous save?\n" +
+                          "New save will store " + list.length + " items.")){
             console.log('canceled');
             return;
         }
@@ -187,22 +187,29 @@ function deletePL(event = null, p = null){
 //Set up the button for user interaction
 function setup(){
     // button creation
-    var save = document.createElement('div');
-    save.innerHTML = '<Button id="save" type="button">Save/Update</Button>';
+    var buttons_div = document.createElement('div');
 
-    var check = document.createElement('div');
-    check.innerHTML = '<Button id="check" type="button">Check</Button>';
+    var save = document.createElement('button');
+    save.setAttribute('id','savePL')
+    save.innerHTML = 'Save/Update';
 
-    var del = document.createElement('div');
-    del.innerHTML = '<Button id="deletePL" type="button">Delete save</Button>';
+    var check = document.createElement('button');
+    check.setAttribute('id','checkPL')
+    check.innerHTML = 'Check';
+
+    var del = document.createElement('button');
+    del.setAttribute('id','deletePL')
+    del.innerHTML = 'Delete save';
 
     save.addEventListener("click", getList);
     check.addEventListener("click", checkPL);
     del.addEventListener("click", deletePL);
 
-    document.getElementById('menu').appendChild(save);
-    document.getElementById('menu').appendChild(check);
-    document.getElementById('menu').appendChild(del);
+    buttons_div.appendChild(save);
+    buttons_div.appendChild(check);
+    buttons_div.appendChild(del);
+
+    document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
 }
 
 //wait for page to load before loading buttons
