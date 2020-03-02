@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         What's Missing
+// @name         What's Missing-test
 // @version      1.2.4
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
@@ -186,28 +186,51 @@ function deletePL(event = null, p = null){
 
 //Set up the button for user interaction
 function setup(){
+    //include bootstrap style
+    var style = document.createElement('link')
+    style.setAttribute('rel', 'stylesheet')
+    style.setAttribute('href', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css')
+    style.setAttribute('integrity', 'sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh')
+    style.setAttribute('crossorigin', 'anonymous')
+    document.head.appendChild(style)
+
     // button creation
     var buttons_div = document.createElement('div');
+    //buttons_div.setAttribute('style','background-color:#ededed;')
+    buttons_div.setAttribute('class','border-top border-bottom')
+    buttons_div.setAttribute('style','margin-top:10px;margin-bottom:10px;'
+    + 'padding-top:5px;padding-bottom:5px;');
 
     var save = document.createElement('button');
     save.setAttribute('id','savePL')
+    save.setAttribute('class','btn btn-success btn-lg')
+    save.setAttribute('style','margin:5px;')
     save.innerHTML = 'Save/Update';
 
     var check = document.createElement('button');
     check.setAttribute('id','checkPL')
+    check.setAttribute('class','btn btn-info btn-lg')
+    check.setAttribute('style','margin:5px;')
     check.innerHTML = 'Check';
 
     var del = document.createElement('button');
     del.setAttribute('id','deletePL')
+    del.setAttribute('class','btn btn-danger btn-lg')
+    del.setAttribute('style','margin:5px;')
     del.innerHTML = 'Delete save';
 
     save.addEventListener("click", getList);
     check.addEventListener("click", checkPL);
     del.addEventListener("click", deletePL);
 
+    var end_text = document.createElement('h5');
+    end_text.setAttribute('style','margin:5px;')
+    end_text.innerHTML = "by What's Missing";
+
     buttons_div.appendChild(save);
     buttons_div.appendChild(check);
     buttons_div.appendChild(del);
+    buttons_div.appendChild(end_text);
 
     document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
 }
