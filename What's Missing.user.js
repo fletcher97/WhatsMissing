@@ -44,7 +44,11 @@
 //    When removing videos from a playlist the buttons will disapear.
 //    To make them come back refresh the page.
 
-
+function containsPL() {
+    var url = new URL(window.location.href);
+    var entry = GM_getValue(url.searchParams.get('list'));
+    return entry !== undefined;
+}
 
 function getPlName(p = null){
     var pl;
@@ -79,7 +83,9 @@ function getList(event = null, returnRes = 0, p = null){
     //retrieve name from videos and escape "
     list = Array.from(list, i => i.getAttribute("title").replace(/"/g, '\\"'));
 
-    var saved = GM_getValue(pl);
+    var url = new URL(window.location.href);
+    var pl_id = url.searchParams.get('list')
+    var saved = GM_getValue(pl_id);
 
     //check if playlist was saved and confirm user intension
     if(saved === undefined && returnRes !== 1){
@@ -109,7 +115,7 @@ function getList(event = null, returnRes = 0, p = null){
         return JSON.parse(json);
     }
     //save playlist
-    GM_setValue(pl, json);
+    GM_setValue(pl_id, json);
     console.log('saved');
 }
 
@@ -123,7 +129,9 @@ function checkPL(event = null, p = null){
     if(pl === null){return;}
 
     //check if playlist was saved previously and retrieve data
-    var save = GM_getValue(pl);
+    
+    var url = new URL(window.location.href);
+    var save = GM_getValue(url.searchParams.get('list'));
     if(save === undefined){
         window.alert('You haven\'t saved this playlist yet.');
         return;
@@ -167,25 +175,30 @@ function checkPL(event = null, p = null){
 //p - playlist name .The pprogram will try to check the playlist name but if it can't find it will use this value
 //    if specified so that the user only has to enter the name of the playlist once per operation.
 function deletePL(event = null, p = null){
-    //get the playlist name
+    //get the playlist name and id
     var pl = getPlName(p);
     if(pl === null){return;}
+    var url = new URL(window.location.href);
+    var pl_id = url.searchParams.get('list');
 
     //Check if the playlist was saved previously
     console.log(pl);
-    if(GM_getValue(pl) === undefined){
+    if(GM_getValue(pl_id) === undefined){
         window.alert('You haven\'t saved this playlist yet.');
         return;
     }
     //confirm playlist save deletion
     if(window.confirm("Are you sure you want to remove \"" + pl + "\" from your saved playlists?")){
         console.log("deleting:" + pl);
-        GM_deleteValue(pl);
+        GM_deleteValue(pl_id);
     }
 }
 
 //Set up the button for user interaction
 function setup(){
+
+    var savedPL = containsPL();
+
     //include bootstrap style
     var style = document.createElement('link')
     style.setAttribute('rel', 'stylesheet')
@@ -205,31 +218,41 @@ function setup(){
     save.setAttribute('id','savePL')
     save.setAttribute('class','btn btn-success btn-lg')
     save.setAttribute('style','margin:5px;')
-    save.innerHTML = 'Save/Update';
 
-    var check = document.createElement('button');
-    check.setAttribute('id','checkPL')
-    check.setAttribute('class','btn btn-info btn-lg')
-    check.setAttribute('style','margin:5px;')
-    check.innerHTML = 'Check';
+    //if playlist isn't saved, only save button is displayed
+    if(!savedPL) {
+        save.innerHTML = 'Save Playlist';
+    } else {
+        save.innerHTML = 'Update Save';
 
-    var del = document.createElement('button');
-    del.setAttribute('id','deletePL')
-    del.setAttribute('class','btn btn-danger btn-lg')
-    del.setAttribute('style','margin:5px;')
-    del.innerHTML = 'Delete save';
+        var check = document.createElement('button');
+        check.setAttribute('id','checkPL')
+        check.setAttribute('class','btn btn-info btn-lg')
+        check.setAttribute('style','margin:5px;')
+        check.innerHTML = 'Check';
 
+        var del = document.createElement('button');
+        del.setAttribute('id','deletePL')
+        del.setAttribute('class','btn btn-danger btn-lg')
+        del.setAttribute('style','margin:5px;')
+        del.innerHTML = 'Delete save';
+
+        check.addEventListener("click", checkPL);
+        del.addEventListener("click", deletePL);
+    }
+    
     save.addEventListener("click", getList);
-    check.addEventListener("click", checkPL);
-    del.addEventListener("click", deletePL);
 
     var end_text = document.createElement('h5');
     end_text.setAttribute('style','margin:5px;')
     end_text.innerHTML = "by What's Missing";
 
     buttons_div.appendChild(save);
-    buttons_div.appendChild(check);
-    buttons_div.appendChild(del);
+    if(savedPL) {
+        buttons_div.appendChild(check);
+        buttons_div.appendChild(del);
+    }
+    
     buttons_div.appendChild(end_text);
 
     document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
