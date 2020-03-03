@@ -117,6 +117,11 @@ function getList(event = null, returnRes = 0, p = null){
     //save playlist
     GM_setValue(pl_id, json);
     console.log('saved');
+
+    //update visible buttons
+    document.getElementById('savePL').innerHTML = 'Update Save';
+    document.getElementById('checkPL').style.visibility = 'visible';
+    document.getElementById('deletePL').style.visibility = 'visible';
 }
 
 //Check if there have been any changes to the playlist
@@ -191,14 +196,16 @@ function deletePL(event = null, p = null){
     if(window.confirm("Are you sure you want to remove \"" + pl + "\" from your saved playlists?")){
         console.log("deleting:" + pl);
         GM_deleteValue(pl_id);
+
+        //update visible buttons
+        document.getElementById('savePL').innerHTML = 'Save Playlist';
+        document.getElementById('checkPL').style.visibility = 'hidden';
+        document.getElementById('deletePL').style.visibility = 'hidden';
     }
 }
 
 //Set up the button for user interaction
-function setup(){
-
-    var savedPL = containsPL();
-
+function setup(){ 
     //include bootstrap style
     var style = document.createElement('link')
     style.setAttribute('rel', 'stylesheet')
@@ -207,40 +214,33 @@ function setup(){
     style.setAttribute('crossorigin', 'anonymous')
     document.head.appendChild(style)
 
-    // button creation
+    //button creation
     var buttons_div = document.createElement('div');
-    //buttons_div.setAttribute('style','background-color:#ededed;')
-    buttons_div.setAttribute('class','border-top border-bottom')
     buttons_div.setAttribute('style','margin-top:10px;margin-bottom:10px;'
     + 'padding-top:5px;padding-bottom:5px;');
+    //buttons_div.style.backgroundColor = '#ededed';
+    buttons_div.setAttribute('class','border-top border-bottom')
 
     var save = document.createElement('button');
     save.setAttribute('id','savePL')
     save.setAttribute('class','btn btn-success btn-lg')
     save.setAttribute('style','margin:5px;')
+    save.innerHTML = 'Update Save';     
 
-    //if playlist isn't saved, only save button is displayed
-    if(!savedPL) {
-        save.innerHTML = 'Save Playlist';
-    } else {
-        save.innerHTML = 'Update Save';
+    var check = document.createElement('button');
+    check.setAttribute('id','checkPL')
+    check.setAttribute('class','btn btn-info btn-lg')
+    check.setAttribute('style','margin:5px;')
+    check.innerHTML = 'Check';
 
-        var check = document.createElement('button');
-        check.setAttribute('id','checkPL')
-        check.setAttribute('class','btn btn-info btn-lg')
-        check.setAttribute('style','margin:5px;')
-        check.innerHTML = 'Check';
+    var del = document.createElement('button');
+    del.setAttribute('id','deletePL')
+    del.setAttribute('class','btn btn-danger btn-lg')
+    del.setAttribute('style','margin:5px;')
+    del.innerHTML = 'Delete Save';
 
-        var del = document.createElement('button');
-        del.setAttribute('id','deletePL')
-        del.setAttribute('class','btn btn-danger btn-lg')
-        del.setAttribute('style','margin:5px;')
-        del.innerHTML = 'Delete save';
-
-        check.addEventListener("click", checkPL);
-        del.addEventListener("click", deletePL);
-    }
-    
+    check.addEventListener("click", checkPL);
+    del.addEventListener("click", deletePL); 
     save.addEventListener("click", getList);
 
     var end_text = document.createElement('h5');
@@ -248,9 +248,14 @@ function setup(){
     end_text.innerHTML = "by What's Missing";
 
     buttons_div.appendChild(save);
-    if(savedPL) {
-        buttons_div.appendChild(check);
-        buttons_div.appendChild(del);
+    buttons_div.appendChild(check);
+    buttons_div.appendChild(del);
+    
+    //if playlist isn't saved, only save button is displayed
+    if(!containsPL()) {
+        save.innerHTML = 'Save Playlist';
+        check.style.visibility = 'hidden';
+        del.style.visibility = 'hidden'
     }
     
     buttons_div.appendChild(end_text);
