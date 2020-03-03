@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         What's Missing-test
+// @name         What's Missing
 // @version      1.3.0
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
