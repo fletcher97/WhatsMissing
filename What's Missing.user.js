@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         What's Missing-test
-// @version      1.2.4
+// @version      1.3.0
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
 // @author       fletcher
@@ -131,7 +131,7 @@ function checkPL(event = null, p = null){
     if(pl === null){return;}
 
     //check if playlist was saved previously and retrieve data
-    
+
     var url = new URL(window.location.href);
     var save = GM_getValue(url.searchParams.get('list'));
     if(save === undefined){
@@ -215,7 +215,6 @@ function setup(){
     var buttons_div = document.createElement('div');
     buttons_div.id = 'whats_missing';
     buttons_div.style = 'margin-top:10px;margin-bottom:10px;padding-top:5px;padding-bottom:5px;';
-    //buttons_div.style.backgroundColor = '#ededed';
     buttons_div.classList = 'border-top border-bottom';
 
     var save = document.createElement('button');
@@ -247,14 +246,14 @@ function setup(){
     buttons_div.appendChild(save);
     buttons_div.appendChild(check);
     buttons_div.appendChild(del);
-    
+
     //if playlist isn't saved, only save button is displayed
     if(!containsPL()) {
         save.innerHTML = 'Save Playlist';
         check.style.visibility = 'hidden';
         del.style.visibility = 'hidden'
     }
-    
+
     buttons_div.appendChild(end_text);
 
     document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
