@@ -40,14 +40,11 @@
 //    4. To view the results press F12, ctrl+shift+i or right-click and select inspect
 //    5. Select the tab 'Console' at the top and you should see the output.
 //       If you only see 'Check end' no changes were detected
-//  TIPS:
-//    When removing videos from a playlist the buttons will disapear.
-//    To make them come back refresh the page.
 
+//Verifies if the presented playlist is saved in GreaseMonkey memory
 function containsPL() {
     var url = new URL(window.location.href);
-    var entry = GM_getValue(url.searchParams.get('list'));
-    return entry !== undefined;
+    return GM_getValue(url.searchParams.get('list')) !== undefined;
 }
 
 function getPlName(p = null){
@@ -208,35 +205,35 @@ function deletePL(event = null, p = null){
 function setup(){ 
     //include bootstrap style
     var style = document.createElement('link')
-    style.setAttribute('rel', 'stylesheet')
-    style.setAttribute('href', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css')
-    style.setAttribute('integrity', 'sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh')
-    style.setAttribute('crossorigin', 'anonymous')
+    style.rel = 'stylesheet';
+    style.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
+    style.integrity = 'sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh';
+    style.crossOrigin = 'anonymous';
     document.head.appendChild(style)
 
     //button creation
     var buttons_div = document.createElement('div');
-    buttons_div.setAttribute('style','margin-top:10px;margin-bottom:10px;'
-    + 'padding-top:5px;padding-bottom:5px;');
+    buttons_div.id = 'whats_missing';
+    buttons_div.style = 'margin-top:10px;margin-bottom:10px;padding-top:5px;padding-bottom:5px;';
     //buttons_div.style.backgroundColor = '#ededed';
-    buttons_div.setAttribute('class','border-top border-bottom')
+    buttons_div.classList = 'border-top border-bottom';
 
     var save = document.createElement('button');
-    save.setAttribute('id','savePL')
-    save.setAttribute('class','btn btn-success btn-lg')
-    save.setAttribute('style','margin:5px;')
+    save.id = 'savePL';
+    save.classList = 'btn btn-success btn-lg';
+    save.style = 'margin:5px;';
     save.innerHTML = 'Update Save';     
 
     var check = document.createElement('button');
-    check.setAttribute('id','checkPL')
-    check.setAttribute('class','btn btn-info btn-lg')
-    check.setAttribute('style','margin:5px;')
+    check.id = 'checkPL';
+    check.classList = 'btn btn-info btn-lg';
+    check.style = 'margin:5px;';
     check.innerHTML = 'Check';
 
     var del = document.createElement('button');
-    del.setAttribute('id','deletePL')
-    del.setAttribute('class','btn btn-danger btn-lg')
-    del.setAttribute('style','margin:5px;')
+    del.id = 'deletePL';
+    del.classList = 'btn btn-danger btn-lg';
+    del.style = 'margin:5px;';
     del.innerHTML = 'Delete Save';
 
     check.addEventListener("click", checkPL);
@@ -244,7 +241,7 @@ function setup(){
     save.addEventListener("click", getList);
 
     var end_text = document.createElement('h5');
-    end_text.setAttribute('style','margin:5px;')
+    end_text.style = 'margin:5px;';
     end_text.innerHTML = "by What's Missing";
 
     buttons_div.appendChild(save);
@@ -263,11 +260,19 @@ function setup(){
     document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
 }
 
+//DOM event listener to fix the bug where buttons are removed when a video is removed from playlist
+var mutationObserver = new MutationObserver(function(mutations) {
+    if (!document.getElementById('whats_missing')) {
+        setup()
+    }
+});
+
 //wait for page to load before loading buttons
 window.addEventListener('load', function () {
     console.log('load');
     if(window.location.href.includes('/playlist')){
        setup();
+       mutationObserver.observe(document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu, {childList: true, subtree: true})
     }
 })
 //reload button when moving between youtube 'pages'
@@ -275,5 +280,6 @@ window.addEventListener('yt-navigate-finish', function () {
     console.log('nav end');
     if(window.location.href.includes('/playlist')){
        setup();
+       mutationObserver.observe(document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu, {childList: true, subtree: true})
     }
 })
