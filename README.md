@@ -5,7 +5,7 @@ __What's Missing__ is a userscript youtube extension which saves the list of vid
 
 You require the browser extension [Tamper Monkey](https://www.tampermonkey.net/) to use this script.
 
-To install the script, simply access the [OpenUserJS](https://openuserjs.org/scripts/fletcher/Whats_Missing) link and click on the "Install" button OR copy paste the [JS file](/What's&nbsp;Missing.user.js) into a Tamper Monkey's new script.
+To install the script, simply access the [OpenUserJS](https://openuserjs.org/scripts/fletcher/Whats_Missing) link and click on the "Install" button OR copy paste the JS file into a Tamper Monkey's new script.
 
 ## How does one use it?
 
@@ -16,7 +16,7 @@ When active, the script adds a div container with buttons to the playlist page, 
 
 Not Saved Playlist            |  Saved Playlist
 :-------------------------:|:-------------------------:
-![Unsaved](/examples/unsaved.jpg) | ![Saved](/examples/saved.jpg)
+![Unsaved](https://imgur.com/a/J2pDXxr) | ![Saved](https://imgur.com/MugLjB2)
 
 The script doesn't keep track of any changes you make, so make sure you update the save often.
 
