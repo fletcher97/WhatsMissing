@@ -16,7 +16,7 @@ When active, the script adds a div container with buttons to the playlist page, 
 
 Not Saved Playlist            |  Saved Playlist
 :-------------------------:|:-------------------------:
-![Unsaved](https://imgur.com/a/J2pDXxr) | ![Saved](https://imgur.com/MugLjB2)
+![Unsaved](https://i.imgur.com/sNxZtKX.jpg) | ![Saved](https://i.imgur.com/MugLjB2.jpg)
 
 The script doesn't keep track of any changes you make, so make sure you update the save often.
 
