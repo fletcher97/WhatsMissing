@@ -47,38 +47,16 @@ function containsPL() {
     return GM_getValue(url.searchParams.get('list')) !== undefined;
 }
 
-function getPlName(p = null){
-    var pl;
-    //try getting playlist name in 2 ways. if failed and no name was given in parameter it will promp user for the name
-    try{
-        pl = document.getElementById("title").firstChild.firstChild.innerHTML;
-    }catch(error){
-        try{
-            pl = document.getElementById("display-dialog").childNodes[1].innerHTML;
-        }catch(error){
-            if(p !== null){
-                pl = p;
-            }else{
-                pl = window.prompt('The title of this playlist could not be read. Please insert it\'s name','Playlist name');
-            }
-        }
-    }
-    return pl;
-}
-
 //Generate a list of titles from the current playlist (playlist page)
 //event - catcher parameter for when the method is called through the listenner
 //returnRes - wether the result should be returned or saved. (0 = save result; 1 = return result)
 //p - playlist name .The pprogram will try to check the playlist name but if it can't find it will use this value
 //    if specified so that the user only has to enter the name of the playlist once per operation.
-function getList(event = null, returnRes = 0, p = null){
+function getList(event = null, returnRes = 0){
     //get a list of all the videos
     var list = document.getElementsByClassName('style-scope ytd-playlist-video-list-renderer').contents.querySelectorAll("[id='video-title']");
-    //get the playlist name
-    var pl = getPlName(p);
-    if(pl === null){return;}
     //retrieve name from videos and escape "
-    list = Array.from(list, i => i.getAttribute("title").replace(/"/g, '\\"'));
+	list = Array.from(list, i => i.getAttribute("title").replace(/"/g, '\\"'));
 
     var url = new URL(window.location.href);
     var pl_id = url.searchParams.get('list')
@@ -125,10 +103,7 @@ function getList(event = null, returnRes = 0, p = null){
 //event - catcher parameter for when the method is called through the listenner
 //p - playlist name .The pprogram will try to check the playlist name but if it can't find it will use this value
 //    if specified so that the user only has to enter the name of the playlist once per operation.
-function checkPL(event = null, p = null){
-    //get the playlist name
-    var pl = getPlName(p);
-    if(pl === null){return;}
+function checkPL(event = null){
 
     //check if playlist was saved previously and retrieve data
 
@@ -140,7 +115,7 @@ function checkPL(event = null, p = null){
     }
     window.alert('Check console for a list of changes');
     save = JSON.parse(save);
-    var current = getList(null, 1, pl);
+    var current = getList(null, 1);
     var size = Math.min(Object.keys(save).length, Object.keys(current).length);
 
     //Check if videos in current playlist were deleted or made private. Log on the console any changes
@@ -176,21 +151,17 @@ function checkPL(event = null, p = null){
 //event - catcher parameter for when the method is called through the listenner
 //p - playlist name .The pprogram will try to check the playlist name but if it can't find it will use this value
 //    if specified so that the user only has to enter the name of the playlist once per operation.
-function deletePL(event = null, p = null){
-    //get the playlist name and id
-    var pl = getPlName(p);
-    if(pl === null){return;}
+function deletePL(event = null){
     var url = new URL(window.location.href);
     var pl_id = url.searchParams.get('list');
 
     //Check if the playlist was saved previously
-    console.log(pl);
     if(GM_getValue(pl_id) === undefined){
         window.alert('You haven\'t saved this playlist yet.');
         return;
     }
     //confirm playlist save deletion
-    if(window.confirm("Are you sure you want to remove \"" + pl + "\" from your saved playlists?")){
+    if(window.confirm("Are you sure you want to remove this from your saved playlists?")){
         console.log("deleting:" + pl);
         GM_deleteValue(pl_id);
 
@@ -202,7 +173,7 @@ function deletePL(event = null, p = null){
 }
 
 //Set up the button for user interaction
-function setup(){ 
+function setup(){
     //include bootstrap style
     var style = document.createElement('link')
     style.rel = 'stylesheet';
@@ -221,7 +192,7 @@ function setup(){
     save.id = 'savePL';
     save.classList = 'btn btn-success btn-lg';
     save.style = 'margin:5px;';
-    save.innerHTML = 'Update Save';     
+    save.innerHTML = 'Update Save';
 
     var check = document.createElement('button');
     check.id = 'checkPL';
@@ -236,7 +207,7 @@ function setup(){
     del.innerHTML = 'Delete Save';
 
     check.addEventListener("click", checkPL);
-    del.addEventListener("click", deletePL); 
+    del.addEventListener("click", deletePL);
     save.addEventListener("click", getList);
 
     var end_text = document.createElement('h5');
