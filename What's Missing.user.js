@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         What's Missing
-// @version      1.3.1
+// @version      1.3.2
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
 // @author       fletcher
@@ -14,6 +14,10 @@
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // ==/UserScript==
+
+//Global Vars
+var BOOTSTRAP_ID = "WMBootstrap";
+var WHATS_MISSING_ID = "whats_missing";
 
 //Verifies if the presented playlist is saved in GreaseMonkey memory
 function containsPL() {
@@ -141,65 +145,72 @@ function deletePL(event = null){
 
 //Set up the button for user interaction
 function setup(){
-    //include bootstrap style
-    var style = document.createElement('link')
-    style.rel = 'stylesheet';
-    style.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
-    style.integrity = 'sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh';
-    style.crossOrigin = 'anonymous';
-    document.head.appendChild(style)
+	//include bootstrap style if it's not presente yet
+	var style = document.getElementById(BOOTSTRAP_ID);
+	if(style === null){
+		style = document.createElement('link');
+		style.id = BOOTSTRAP_ID;
+		style.rel = 'stylesheet';
+		style.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
+		style.integrity = 'sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh';
+		style.crossOrigin = 'anonymous';
+		document.head.appendChild(style);
+	}
+    
+	//button creation
+	var whats_missing = document.getElementById(WHATS_MISSING_ID);
+	if(whats_missing === null){
+		var buttons_div = document.createElement('div');
+		buttons_div.id = WHATS_MISSING_ID;
+		buttons_div.style = 'margin-top:10px;margin-bottom:10px;padding-top:5px;padding-bottom:5px;';
+		buttons_div.classList = 'border-top border-bottom';
 
-    //button creation
-    var buttons_div = document.createElement('div');
-    buttons_div.id = 'whats_missing';
-    buttons_div.style = 'margin-top:10px;margin-bottom:10px;padding-top:5px;padding-bottom:5px;';
-    buttons_div.classList = 'border-top border-bottom';
+		var save = document.createElement('button');
+		save.id = 'savePL';
+		save.classList = 'btn btn-success btn-lg';
+		save.style = 'margin:5px;';
+		save.innerHTML = 'Update Save';
 
-    var save = document.createElement('button');
-    save.id = 'savePL';
-    save.classList = 'btn btn-success btn-lg';
-    save.style = 'margin:5px;';
-    save.innerHTML = 'Update Save';
+		var check = document.createElement('button');
+		check.id = 'checkPL';
+		check.classList = 'btn btn-info btn-lg';
+		check.style = 'margin:5px;';
+		check.innerHTML = 'Check';
 
-    var check = document.createElement('button');
-    check.id = 'checkPL';
-    check.classList = 'btn btn-info btn-lg';
-    check.style = 'margin:5px;';
-    check.innerHTML = 'Check';
+		var del = document.createElement('button');
+		del.id = 'deletePL';
+		del.classList = 'btn btn-danger btn-lg';
+		del.style = 'margin:5px;';
+		del.innerHTML = 'Delete Save';
 
-    var del = document.createElement('button');
-    del.id = 'deletePL';
-    del.classList = 'btn btn-danger btn-lg';
-    del.style = 'margin:5px;';
-    del.innerHTML = 'Delete Save';
+		check.addEventListener("click", checkPL);
+		del.addEventListener("click", deletePL);
+		save.addEventListener("click", getList);
 
-    check.addEventListener("click", checkPL);
-    del.addEventListener("click", deletePL);
-    save.addEventListener("click", getList);
+		var end_text = document.createElement('h5');
+		end_text.style = 'margin:5px;color:var(--yt-live-chat-primary-text-color)';
+		end_text.innerHTML = "by What's Missing";
 
-    var end_text = document.createElement('h5');
-    end_text.style = 'margin:5px;color:var(--yt-live-chat-primary-text-color)';
-    end_text.innerHTML = "by What's Missing";
+		buttons_div.appendChild(save);
+		buttons_div.appendChild(check);
+		buttons_div.appendChild(del);
 
-    buttons_div.appendChild(save);
-    buttons_div.appendChild(check);
-    buttons_div.appendChild(del);
+		//if playlist isn't saved, only save button is displayed
+		if(!containsPL()) {
+			save.innerHTML = 'Save Playlist';
+			check.style.visibility = 'hidden';
+			del.style.visibility = 'hidden'
+		}
 
-    //if playlist isn't saved, only save button is displayed
-    if(!containsPL()) {
-        save.innerHTML = 'Save Playlist';
-        check.style.visibility = 'hidden';
-        del.style.visibility = 'hidden'
-    }
+		buttons_div.appendChild(end_text);
 
-    buttons_div.appendChild(end_text);
-
-    document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
+		document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu.appendChild(buttons_div);
+	}
 }
 
 //DOM event listener to fix the bug where buttons are removed when a video is removed from playlist
 var mutationObserver = new MutationObserver(function(mutations) {
-    if (!document.getElementById('whats_missing')) {
+    if (!document.getElementById(WHATS_MISSING_ID)) {
         setup()
     }
 });
@@ -213,6 +224,14 @@ window.addEventListener('load', function () {
 })
 //reload button when moving between youtube 'pages'
 window.addEventListener('yt-navigate-finish', function () {
+    var style = document.getElementById(BOOTSTRAP_ID);
+	while(style !== null){
+		style.parentNode.removeChild(style);
+	}
+	var whats_missing = document.getElementById(WHATS_MISSING_ID);
+	while(whats_missing !== null){
+		whats_missing.parentNode.removeChild(whats_missing);
+	}
     if(window.location.href.includes('/playlist')){
        setup();
        mutationObserver.observe(document.getElementsByClassName('style-scope ytd-playlist-sidebar-primary-info-renderer').menu, {childList: true, subtree: true})
