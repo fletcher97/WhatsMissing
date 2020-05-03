@@ -210,7 +210,7 @@ function setup(){
 
 //DOM event listener to fix the bug where buttons are removed when a video is removed from playlist
 var mutationObserver = new MutationObserver(function(mutations) {
-    if (!document.getElementById(WHATS_MISSING_ID)) {
+    if (window.location.href.includes('/playlist') && !document.getElementById(WHATS_MISSING_ID)) {
         setup()
     }
 });
