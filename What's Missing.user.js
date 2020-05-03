@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         What's Missing
-// @version      1.3.2
+// @version      1.3.3
 // @description  Save playlist videos in order to remember what video got removed
 // @license      MIT
 // @author       fletcher
@@ -210,7 +210,7 @@ function setup(){
 
 //DOM event listener to fix the bug where buttons are removed when a video is removed from playlist
 var mutationObserver = new MutationObserver(function(mutations) {
-    if (!document.getElementById(WHATS_MISSING_ID)) {
+    if (window.location.href.includes('/playlist') && !document.getElementById(WHATS_MISSING_ID)) {
         setup()
     }
 });
